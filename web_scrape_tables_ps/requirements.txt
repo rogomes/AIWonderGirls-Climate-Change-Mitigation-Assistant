@@ -1,0 +1,6 @@
+numpy
+pandas
+wheel
+opencv-python
+urllib3
+beautifulsoup4
