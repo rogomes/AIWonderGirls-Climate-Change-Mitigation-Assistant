@@ -4,7 +4,7 @@ To run the application on your system:
 1. Clone the repository 
 2. Install requirements
    ```bash
-   pip install -r req.txt
+   pip install -r requirements.txt
    ```
 3. Start the streamlit app
    ```bash
