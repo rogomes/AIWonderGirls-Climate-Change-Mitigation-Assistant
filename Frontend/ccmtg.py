@@ -19,9 +19,7 @@ import seaborn as sns
 import plotly.graph_objects as go
 import warnings
 
-
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
-
 
 
 warnings.filterwarnings( "ignore")
@@ -54,7 +52,7 @@ sector_map_dict = { 'climateScience': 'Industry', 'socialCost':'Industry', 'heal
 
 #### Application starts
 st.sidebar.image('images/main.jpeg')
-st.sidebar.write('Climate Change   ')
+st.sidebar.write('Welcome to the Climate Change Mitigation Assistant')
 selection = st.sidebar.selectbox("Go to page:", [ 'Climate Change Effects', 'Climate Change Studies' , 'Climate Mitigation Solutions', 'Further Scope & Credits'])
 
 
@@ -68,6 +66,15 @@ st.title('Climate Change Mitigation Assistant ')
 if selection == 'Climate Change Effects':
         st.image('images/cce1.jpeg')
         st.header('Climate Change Effects')
+        st.write("Most scientists globally have agreed that human activities, especially those involving \
+                  burning fossil fuels are causing an accelerated rise in the global temperature. \
+                  The Intergovernmental Panel on Climate Change (IPCC), one of the most trustable source \
+                  of climate change related research, released its newest report, the Sixth Assessment Report, \
+                  in August 2021, containing some alarming details.")
+        st.markdown('>*"Faster warming"*')
+        st.markdown('>*"Climate change widespread, rapid, and intensifying"*')
+        st.write("It is then of utmost important that efforts are performed to mitigate climate change effects. \
+                 First, however, we need to understand the effects of climate change.")
         st.write("It is widely known that human activities especially \
                   the burning of fossil fuels have caused global warming \
                   that eventually causes climate change.")
@@ -75,6 +82,7 @@ if selection == 'Climate Change Effects':
                   a number of adverse effects.")
         st.write("This includes rising sea level, melting ice caps, and many more.")
 
+        st.subheader("Rising Global Temperature")
         st.write("Below we can see the rising global temperature anomaly over time.")
         temperature = pd.read_csv("data/global-temperature-annual.csv")
         year_start_temp, year_end_temp = st.slider('Choose year range:', 1880, 2016, (1880, 2016))
@@ -91,6 +99,8 @@ if selection == 'Climate Change Effects':
                                  name = 'Global Temperature Change Anomaly'))
         st.plotly_chart(fig, use_container_width=True)
 
+
+        st.subheader("Rising Sea Level")
         st.write("Below we can see the rising sea level over time.")
         sealevel = pd.read_csv("data/epa-sea-level.csv")
         year_start_sea, year_end_sea = st.slider('Choose year range:', 1880, 2013, (1880, 2013))
@@ -107,10 +117,95 @@ if selection == 'Climate Change Effects':
         st.plotly_chart(fig, use_container_width=True)
 
 
-        st.write('Below is a bar chart race showing the top n countries that produce \
-                  the most ' + 'CO{}'.format('\u2082') + ' emissions over the years.')
+        st.subheader("Glacier Mass Balance")
+        st.write("Below we can see the changes in glaciers mass balance over time.")
+        glacier = pd.read_csv("data/glaciers_mass.csv")
+        year_start_glacier, year_end_glacier = st.slider('Choose year range:', 1945, 2014, (1945, 2014))
+        st.write("Average cumulative mass balance of “reference” Glaciers worldwide from 1945-2014 \
+                  sourced from US EPA and the World Glacier Monitoring Service (WGMS).")
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x = glacier.loc[(glacier['Year'] >= year_start_glacier) \
+                                 & (glacier['Year'] <= year_end_glacier)]['Year'],
+                                 y = glacier.loc[(glacier['Year'] >= year_start_glacier) \
+                                 & (glacier['Year'] <= year_end_glacier)]['Mean cumulative mass balance'],
+                                 mode = 'lines',
+                                 name = 'Glaciers Mass Balance'))
+        st.plotly_chart(fig, use_container_width=True)
+
+
+        st.subheader("Carbon Emissions by Country")
+        st.write('Below is a bar chart race showing the top 10 countries that produce \
+                  the highest total ' + 'CO{}'.format('\u2082') + ' emissions over the years.')
         st.video('carbon-emissions.mp4')
 
+
+        # Defining country options
+        countries = ["Afghanistan", "Albania", "Algeria", "American Samoa", "Andorra", "Angola", 
+             "Antigua and Barbuda", "Arab World", "Argentina", "Armenia", "Aruba", "Australia", 
+             "Austria", "Azerbaijan", "Bahamas, The", "Bahrain", "Bangladesh", "Barbados", 
+             "Belarus", "Belgium", "Belize", "Benin", "Bermuda", "Bhutan", "Bolivia", 
+             "Bosnia and Herzegovina", "Botswana", "Brazil", "British Virgin Islands", 
+             "Brunei Darussalam", "Bulgaria", "Burkina Faso", "Burundi", "Cabo Verde", 
+             "Cambodia", "Cameroon", "Canada", "Caribbean small states", "Cayman Islands", 
+             "Central African Republic", "Central Europe and the Baltics", "Chad", "Channel Islands", 
+             "Chile", "China", "Colombia", "Comoros", "Congo, Dem. Rep.", "Congo, Rep.", 
+             "Costa Rica", "Cote d'Ivoire", "Croatia", "Cuba", "Curacao", "Cyprus", "Czech Republic", 
+             "Denmark", "Djibouti", "Dominica", "Dominican Republic", "Early-demographic dividend", 
+             "East Asia & Pacific", "East Asia & Pacific (excluding high income)", 
+             "East Asia & Pacific (IDA & IBRD)", "Ecuador", "Egypt, Arab Rep.", "El Salvador", 
+             "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini", "Ethiopia", "Euro area", 
+             "Europe & Central Asia", "Europe & Central Asia (excluding high income)", 
+             "Europe & Central Asia (IDA & IBRD)", "European Union", "Faroe Islands", "Fiji", 
+             "Finland", "Fragile and conflict affected situations", "France", "French Polynesia", 
+             "Gabon", "Gambia, The", "Georgia", "Germany", "Ghana", "Gibraltar", "Greece", 
+             "Greenland", "Grenada", "Guam", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", 
+             "Haiti", "Heavily indebted poor countries (HIPC)", "High income", "Honduras", 
+             "Hong Kong SAR, China", "Hungary", "IBRD only", "Iceland", "IDA & IBRD total", 
+             "IDA blend", "IDA only", "IDA total", "India", "Indonesia", "Iran, Islamic Rep.", 
+             "Iraq", "Ireland", "Isle of Man", "Israel", "Italy", "Jamaica", "Japan", "Jordan", 
+             "Kazakhstan", "Kenya", "Kiribati", "Korea, Dem. People's Rep.", "Korea, Rep.", 
+             "Kosovo", "Kuwait", "Kyrgyz Republic", "Lao PDR", "Late-demographic dividend", 
+             "Latin America & Caribbean", "Latin America & Caribbean (excluding high income)", 
+             "Latin America & Caribbean (IDA & IBRD)", "Latvia", 
+             "Least developed countries: UN classification", "Lebanon", "Lesotho", "Liberia", 
+             "Libya", "Liechtenstein", "Lithuania", "Low & middle income", "Low income", 
+             "Lower middle income", "Luxembourg", "Macao SAR, China", "Madagascar", "Malawi", 
+             "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", 
+             "Mauritius", "Mexico", "Micronesia, Fed. Sts.", "Middle East & North Africa",
+             "Middle East & North Africa (excluding high income)", 
+             "Middle East & North Africa (IDA & IBRD)", "Middle income", "Moldova", "Monaco", 
+             "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar", "Namibia", "Nauru",
+             "Nepal", "Netherlands", "New Caledonia", "New Zealand", "Nicaragua", "Niger", "Nigeria",
+             "North America", "North Macedonia", "Northern Mariana Islands", "Norway", "OECD members", 
+             "Oman", "Other small states", "Pacific island small states", "Pakistan", "Palau", 
+             "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", 
+             "Post-demographic dividend", "Pre-demographic dividend", "Puerto Rico", "Qatar", 
+             "Romania", "Russian Federation", "Rwanda", "Samoa", "San Marino", "Sao Tome and Principe", 
+             "Saudi Arabia", "Senegal", "Serbia", "Seychelles", "Sierra Leone", "Singapore", 
+             "Sint Maarten (Dutch part)", "Slovak Republic", "Slovenia", "Small states", 
+             "Solomon Islands", "Somalia", "South Africa", "South Asia", "South Asia (IDA & IBRD)", 
+             "South Sudan", "Spain", "Sri Lanka,St. Kitts and Nevis", "St. Lucia", 
+             "St. Martin (French part)", "St. Vincent and the Grenadines", "Sub-Saharan Africa",
+             "Sub-Saharan Africa (excluding high income)", "Sub-Saharan Africa (IDA & IBRD)",
+             "Sudan", "Suriname", "Sweden", "Switzerland", "Syrian Arab Republic", "Tajikistan", 
+             "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", "Tunisia",
+             "Turkey", "Turkmenistan", "Turks and Caicos Islands", "Tuvalu", "Uganda", "Ukraine", 
+             "United Arab Emirates", "United Kingdom", "United States", "Upper middle income", 
+             "Uruguay", "Uzbekistan", "Vanuatu" ,"Venezuela, RB", "Vietnam", "Virgin Islands (U.S.)", 
+             "West Bank and Gaza", "World", "Yemen, Rep.", "Zambia", "Zimbabwe"]
+
+
+        st.write('Choose a country to see its emissions per capita over the years in kt of  ' + 'CO{}'.format('\u2082') + '.')
+        emissions = pd.read_csv('data/co2_emissions_per_capita_by_country.csv')
+        default_ix = countries.index("World")
+        em_country = st.selectbox("Select country:", options=countries, index=default_ix)
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x = [year for year in range(1990, 2018)],
+                                 y = emissions[emissions['Country'] == em_country]['CO2_emissions_per_capita'],
+                                 mode = 'lines',
+                                 name = 'Carbon Emissions of {}'.format(em_country)))
+        st.plotly_chart(fig, use_container_width=True)
 
 
 
