@@ -16,11 +16,15 @@ from PIL import Image
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+import plotly.graph_objects as go
+import warnings
+
 
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 
 
 
+warnings.filterwarnings( "ignore")
 
 
 
@@ -51,10 +55,10 @@ sector_map_dict = { 'climateScience': 'Industry', 'socialCost':'Industry', 'heal
 #### Application starts
 st.sidebar.image('images/main.jpeg')
 st.sidebar.write('Climate Change   ')
-selection = st.sidebar.selectbox("Go to page:", [ 'Climate Change Effects', 'Climate Change Studies' , 'Climate Mitigation Solutions', 'Analysis'])
+selection = st.sidebar.selectbox("Go to page:", [ 'Climate Change Effects', 'Climate Change Studies' , 'Climate Mitigation Solutions', 'Further Scope & Credits'])
 
 
-#Main Window
+# Main Window
 
 session_state = SessionState.get(sector='')
 sess_topics = SessionState.get(topics=[])
@@ -63,8 +67,52 @@ sess_ddtopics = SessionState.get(ddtopics=[])
 st.title('Climate Change Mitigation Assistant ')
 if selection == 'Climate Change Effects':
         st.image('images/cce1.jpeg')
-        st.header('Climate Change Effects ')
-        st.write("greenhouse gases , global warming")
+        st.header('Climate Change Effects')
+        st.write("It is widely known that human activities especially \
+                  the burning of fossil fuels have caused global warming \
+                  that eventually causes climate change.")
+        st.write("Global warming means rising global temperature, which causes \
+                  a number of adverse effects.")
+        st.write("This includes rising sea level, melting ice caps, and many more.")
+
+        st.write("Below we can see the rising global temperature anomaly over time.")
+        temperature = pd.read_csv("data/global-temperature-annual.csv")
+        year_start_temp, year_end_temp = st.slider('Choose year range:', 1880, 2016, (1880, 2016))
+        st.write("Global temperature anomaly data are sourced from NASA's GISS Surface Temperature \
+                  (GISTEMP) analysis and the global component of Climate at a Glance (GCAG).")
+        source = st.selectbox("Select data source:", ['GISTEMP', 'GCAG'])
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x = temperature.loc[(temperature['Year'] >= year_start_temp) \
+                                 & (temperature['Year'] <= year_end_temp)]['Year'],
+                                 y = temperature.loc[(temperature['Year'] >= year_start_temp) \
+                                 & (temperature['Year'] <= year_end_temp)][temperature['Source'] == source]['Mean'],
+                                 mode = 'lines',
+                                 name = 'Global Temperature Change Anomaly'))
+        st.plotly_chart(fig, use_container_width=True)
+
+        st.write("Below we can see the rising sea level over time.")
+        sealevel = pd.read_csv("data/epa-sea-level.csv")
+        year_start_sea, year_end_sea = st.slider('Choose year range:', 1880, 2013, (1880, 2013))
+        st.write("Sea level data were sourced from CSIRO Adjusted Sea Level \
+                  from the Environmental Protection Agency (EPA), USA.")
+
+        fig = go.Figure()
+        fig.add_trace(go.Scatter(x = sealevel.loc[(sealevel['Year'] >= year_start_sea) \
+                                 & (temperature['Year'] <= year_end_sea)]['Year'],
+                                 y = sealevel.loc[(sealevel['Year'] >= year_start_sea) \
+                                 & (temperature['Year'] <= year_end_sea)]['CSIRO Adjusted Sea Level'],
+                                 mode = 'lines',
+                                 name = 'Global Sea Level Rise'))
+        st.plotly_chart(fig, use_container_width=True)
+
+
+        st.write('Below is a bar chart race showing the top n countries that produce \
+                  the most ' + 'CO{}'.format('\u2082') + ' emissions over the years.')
+        st.video('carbon-emissions.mp4')
+
+
+
 
 elif selection == 'Climate Change Studies':
         st.image('images/cl2.jpeg')
@@ -87,7 +135,8 @@ elif selection == 'Climate Change Studies':
                 st.write('Abstract:')
                 st.write(abstract[0])
                 text = abstract[0]
-                wordcloud = WordCloud(max_font_size=50, max_words=30, background_color="white").generate(text)
+                words1 = st.slider('Choose the number of words to display:', min_value=5, max_value=150, value=50, step=5)
+                wordcloud = WordCloud(max_font_size=50, max_words=words1, background_color="white").generate(text)
                 # Display the generated image:
                 fig, ax = plt.subplots()
                 plt.imshow(wordcloud, interpolation='bilinear')
@@ -174,7 +223,8 @@ elif selection == 'Climate Mitigation Solutions':
              st.write(impact_str)
         else:
              st.write(summary_str)
-        wordcloud = WordCloud(max_font_size=50, max_words=100, background_color="white").generate(tech_summary)
+        words2 = st.slider('Choose the number of words to display:', min_value=5, max_value=150, value=50, step=5)
+        wordcloud = WordCloud(max_font_size=50, max_words=words2, background_color="white").generate(tech_summary)
         # Display the generated image:
         fig, ax = plt.subplots()
         plt.imshow(wordcloud, interpolation='bilinear')
@@ -184,9 +234,25 @@ elif selection == 'Climate Mitigation Solutions':
 
 
 
-elif selection == 'Analysis':
-        st.header('Analysis on Climate Change Effects , Mitigation ')
+elif selection == 'Further Scope & Credits':
         st.image('images/ccmit3.jpeg')
+        st.subheader('Intended Audience:')
+        st.write("The mitigation assistant application can be used by industry,policy makers, communities,and general public in adapting to the climate effects relevant to their sector and helps in climate mitigation solution planning implemetation" )
+        st.subheader("This application can be enhanced with ")
+        st.write("* QnA NLP system for user to query any topic/solution.")
+        st.write("* Adding more portals for climate study and solutions.")
+        st.write("* Support industries/communities in implementation of solutions.")
+        st.write("* Provide rating  for industries/policies on effeciency and impact of solutions.")
+        st.write("* Motivate general public in raising awareness on climate solutions.")
+        st.write("* Promote public, private partnerships  in implementation of climate solutions.")
+
+        st.subheader("Credits:")
+        st.write("* https://impactlab.org")
+        st.write("* https://drawdown.org")
+        st.write("* https://datahub.io/core/global-temp")
+        st.write("* https://www.epa.gov/climate-indicators/climate-change-indicators-sea-level")
+        st.write("* https://databank.worldbank.org/source/millennium-development-goals# ") 
+
 
 
 
